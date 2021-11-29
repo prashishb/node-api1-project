@@ -34,4 +34,16 @@ server.post('/api/users', async (req, res) => {
   }
 });
 
+// [GET] /api/users
+server.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).send({
+      message: `Error: ${err.message}`,
+    });
+  }
+});
+
 module.exports = server;
