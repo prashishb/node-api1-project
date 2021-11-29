@@ -13,7 +13,7 @@ server.post('/api/users', async (req, res) => {
   try {
     if (!req.body.name || !req.body.bio) {
       res.status(400).json({
-        message: 'Missing name or bio',
+        message: 'Please provide name and bio for the user',
       });
     } else {
       const newUser = await User.insert(req.body);
@@ -21,7 +21,8 @@ server.post('/api/users', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: `Error: ${err.message}`,
+      message: `There was an error while saving the user to the database`,
+      error: err.message,
     });
   }
 });
@@ -33,7 +34,8 @@ server.get('/api/users', async (req, res) => {
     res.status(200).json(users);
   } catch (err) {
     res.status(500).json({
-      message: `Error: ${err.message}`,
+      message: `The users information could not be retrieved`,
+      error: err.message,
     });
   }
 });
@@ -44,14 +46,15 @@ server.get('/api/users/:id', async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) {
       res.status(404).json({
-        message: `User with id ${req.params.id} does not exist`,
+        message: `The user with the specified ID does not exist`,
       });
     } else {
       res.status(200).json(user);
     }
   } catch (err) {
     res.status(500).json({
-      message: `Error: ${err.message}`,
+      message: `The user information could not be retrieved`,
+      error: err.message,
     });
   }
 });
@@ -62,7 +65,7 @@ server.delete('/api/users/:id', async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) {
       res.status(404).json({
-        message: `User with id ${req.params.id} does not exist`,
+        message: `The user with the specified ID does not exist`,
       });
     } else {
       const deletedUser = await User.remove(req.params.id);
@@ -70,7 +73,8 @@ server.delete('/api/users/:id', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: `Error: ${err.message}`,
+      message: `The user could not be removed`,
+      error: err.message,
     });
   }
 });
@@ -82,13 +86,13 @@ server.put('/api/users/:id', async (req, res) => {
   try {
     if (!body.name || !body.bio) {
       res.status(400).json({
-        message: 'Missing name or bio',
+        message: 'Please provide name and bio for the user',
       });
     } else {
       const user = await User.findById(id);
       if (!user) {
         res.status(404).json({
-          message: `User with id ${req.params.id} does not exist`,
+          message: `The user with the specified ID does not exist`,
         });
       } else {
         const updatedUser = await User.update(id, body);
@@ -97,7 +101,8 @@ server.put('/api/users/:id', async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: `Error: ${err.message}`,
+      message: `The user information could not be modified`,
+      error: err.message,
     });
   }
 });
